@@ -4,65 +4,61 @@
 <meta charset="UTF-8">
 <title>Telegram Bot Online Postman</title>
 <style>
-body {
-    background: #0b0b0b;
-    color: #eaeaea;
-    font-family: monospace;
-    padding: 20px;
-}
-input, button {
-    width: 100%;
-    margin: 6px 0;
-    padding: 10px;
-    background: #161616;
-    color: #fff;
-    border: 1px solid #333;
-}
-button {
-    cursor: pointer;
-}
-pre {
-    background: #111;
-    padding: 10px;
-    overflow-x: auto;
-}
+body { background: #0b0b0b; color: #eaeaea; font-family: monospace; padding: 20px;}
+input, button { width: 100%; margin: 6px 0; padding: 10px; background: #161616; color: #fff; border: 1px solid #333;}
+button { cursor: pointer; }
+pre { background: #111; padding: 10px; overflow-x: auto; }
 </style>
 </head>
 <body>
 
-<h3>Telegram Bot API — Online Postman</h3>
+<h3>Telegram Bot — HTML Online Postman</h3>
 
 <input id="token" placeholder="BOT TOKEN">
 <input id="chat" placeholder="CHAT_ID">
 <input id="text" value="Чит-кнопка" placeholder="Текст сообщения">
 <input id="btnText" value="Взломать" placeholder="Текст кнопки">
-<input id="callback" value="bot_view:16" placeholder="callback_data">
+<input id="url" value="https://t.me/" placeholder="Ссылка для кнопки">
 
 <button onclick="send()">SEND</button>
-
 <pre id="result"></pre>
 
 <script>
-function send() {
+async function send() {
     const token = document.getElementById("token").value.trim();
-    const chatId = document.getElementById("chat").value.trim();
+    const chat = document.getElementById("chat").value.trim();
     const text = document.getElementById("text").value;
     const btnText = document.getElementById("btnText").value;
-    const callback = document.getElementById("callback").value;
+    const url = document.getElementById("url").value;
 
-    if (!token || !chatId) {
-        alert("Заполните BOT TOKEN и CHAT_ID");
-        return;
-    }
-
-    const url = `https://api.telegram.org/bot${token}/sendMessage`;
+    if (!token || !chat) { alert("Введите token и chat_id"); return; }
 
     const payload = {
-        chat_id: chatId,
+        chat_id: chat,
         text: text,
         reply_markup: {
             inline_keyboard: [
-                [
+                [{ text: btnText, url: url }]
+            ]
+        }
+    };
+
+    try {
+        const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        document.getElementById("result").textContent = JSON.stringify(json, null, 2);
+    } catch (err) {
+        document.getElementById("result").textContent = "Ошибка: " + err;
+    }
+}
+</script>
+
+</body>
+</html>
                     {
                         text: btnText,
                         callback_data: callback
