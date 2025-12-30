@@ -279,4 +279,4 @@ class HelpToolsNoos(loader.Module):
     async def кmcmd(self, m):
         await hikka_utils.answer(m, self.strings["km_help"])
 
-@loader.author("@tu2de (laironix)")
+
